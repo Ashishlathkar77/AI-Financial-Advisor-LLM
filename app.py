@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 # OpenAI API key
-OPENAI_API_KEY = 'sk-your-OpenAI-API-keys'
+OPENAI_API_KEY = 'sk-your-OPENAI-API-keys'
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 analyzer = SentimentIntensityAnalyzer()
 
