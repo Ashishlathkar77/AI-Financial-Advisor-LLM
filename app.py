@@ -2,13 +2,12 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import openai
-import faiss
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
+from datetime import datetime
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import pytz
 
 # OpenAI API key
-OPENAI_API_KEY = 'sk-your-OPENAI-API-keys'
+OPENAI_API_KEY = 'your-OpenAI-API-keys'
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 analyzer = SentimentIntensityAnalyzer()
 
@@ -86,75 +85,137 @@ def analyze_sentiment(news_url):
     except Exception as e:
         return f"Error in analyzing sentiment: {str(e)}"
 
-# Streamlit Sidebar Navigation
-st.sidebar.title("AI-Powered Financial Advisor")
-option = st.sidebar.selectbox(
-    "Choose a feature", 
-    ["Personalized Financial Plan", "Tax Optimization Strategy", "Financial News Summary", "Sentiment Intensity Analyzer"]
-)
+# Function to determine greeting based on time
+from datetime import datetime
+import pytz
 
-# Main Content Area
-if option == "Personalized Financial Plan":
-    st.header("Personalized Financial Plan")
+def get_greeting():
+    # Set your timezone here (e.g., 'America/New_York' for EST/EDT)
+    timezone = pytz.timezone('America/New_York')  # Adjust as necessary
+    now = datetime.now(timezone).hour
 
-    risk_tolerance = st.selectbox("Risk Tolerance", ["Low", "Medium", "High"])
-    financial_goal = st.selectbox(
-        "Financial Goal", 
-        ["Save for retirement", "Buy a house", "Save for education", "Build an emergency fund", "Custom"]
-    )
-
-    if financial_goal == "Custom":
-        goal_name = st.text_input("Custom Goal Name", "e.g., Start a business")
+    if now < 12:
+        return "Good morning 🌅"
+    elif 12 <= now < 18:
+        return "Good afternoon ☀️"
     else:
-        goal_name = financial_goal
+        return "Good evening 🌙"
 
-    investment_preferences = st.multiselect(
-        "Investment Preferences", 
-        ["Stocks", "Bonds", "Index Funds", "Mutual Funds", "Real Estate", "Cryptocurrency", "ETFs"]
+# Welcome Page
+def show_welcome_page():
+    st.title("Welcome to the AI-Powered Financial Advisor 🏦")
+    
+    greeting = get_greeting()
+    first_name = st.text_input("What's your first name?", "")
+    
+    if first_name:
+        st.write(f"{greeting}, {first_name}! Welcome to our financial advisor app. 🎉")
+        if st.button("Let's Go"):
+            st.session_state.first_name = first_name
+            st.session_state.show_main_app = True
+    
+# Main Application
+def show_main_app():
+    # Streamlit Sidebar Navigation
+    st.sidebar.title("AI-Powered Financial Advisor 🏦")
+    option = st.sidebar.selectbox(
+        "Choose a feature", 
+        ["Personalized Financial Plan", "Tax Optimization Strategy", "Financial News Summary", "Sentiment Intensity Analyzer"]
     )
 
-    goal_amount = st.number_input("Goal Amount", min_value=0, step=1000)
-    current_savings = st.number_input("Current Savings", min_value=0, step=1000)
+    # Main Content Area
+    if option == "Personalized Financial Plan":
+        st.header("Personalized Financial Plan 💼")
 
-    if st.button("Generate Financial Plan"):
-        financial_plan = generate_financial_plan(risk_tolerance, goal_name, investment_preferences, goal_amount, current_savings)
-        st.subheader("Your Financial Plan")
-        st.write(financial_plan)
+        risk_tolerance = st.selectbox("Risk Tolerance", ["Low", "Medium", "High"])
+        financial_goal = st.selectbox(
+            "Financial Goal", 
+            ["Save for retirement", "Buy a house", "Save for education", "Build an emergency fund", "Custom"]
+        )
 
-elif option == "Tax Optimization Strategy":
-    st.header("Tax Optimization Strategy")
-
-    current_savings = st.number_input("Current Savings", min_value=0, step=1000)
-    investment_preferences = st.multiselect(
-        "Investment Preferences", 
-        ["Stocks", "Bonds", "Index Funds", "Mutual Funds", "Real Estate", "Cryptocurrency", "ETFs"]
-    )
-
-    if st.button("Generate Tax Optimization Strategy"):
-        tax_strategy = generate_tax_optimization_strategy(current_savings, investment_preferences)
-        st.subheader("Your Tax Optimization Strategy")
-        st.write(tax_strategy)
-
-elif option == "Financial News Summary":
-    st.header("Financial News Summary")
-    news_url = st.text_input("Enter Financial News URL")
-
-    if st.button("Get Article Summary"):
-        summary = summarize_financial_news(news_url)
-        st.subheader("Article Summary")
-        st.write(summary)
-
-elif option == "Sentiment Intensity Analyzer":
-    st.header("Sentiment Intensity Analyzer")
-    news_url = st.text_input("Enter Financial News URL")
-
-    if st.button("Analyze Sentiment"):
-        sentiment = analyze_sentiment(news_url)
-        if isinstance(sentiment, dict):
-            st.subheader("Sentiment Analysis Results")
-            st.write("Positive: ", sentiment['pos'])
-            st.write("Neutral: ", sentiment['neu'])
-            st.write("Negative: ", sentiment['neg'])
-            st.write("Compound: ", sentiment['compound'])
+        if financial_goal == "Custom":
+            goal_name = st.text_input("Custom Goal Name", "e.g., Start a business")
         else:
-            st.write(sentiment)
+            goal_name = financial_goal
+
+        investment_preferences = st.multiselect(
+            "Investment Preferences", 
+            ["Stocks", "Bonds", "Index Funds", "Mutual Funds", "Real Estate", "Cryptocurrency", "ETFs"]
+        )
+
+        goal_amount = st.number_input("Goal Amount", min_value=0, step=1000)
+        current_savings = st.number_input("Current Savings", min_value=0, step=1000)
+
+        if st.button("Generate Financial Plan"):
+            financial_plan = generate_financial_plan(risk_tolerance, goal_name, investment_preferences, goal_amount, current_savings)
+            st.subheader("Your Financial Plan 📈")
+            st.write(financial_plan)
+
+    elif option == "Tax Optimization Strategy":
+        st.header("Tax Optimization Strategy 🧾")
+
+        current_savings = st.number_input("Current Savings", min_value=0, step=1000)
+        investment_preferences = st.multiselect(
+            "Investment Preferences", 
+            ["Stocks", "Bonds", "Index Funds", "Mutual Funds", "Real Estate", "Cryptocurrency", "ETFs"]
+        )
+
+        if st.button("Generate Tax Optimization Strategy"):
+            tax_strategy = generate_tax_optimization_strategy(current_savings, investment_preferences)
+            st.subheader("Your Tax Optimization Strategy 💡")
+            st.write(tax_strategy)
+
+    elif option == "Financial News Summary":
+        st.header("Financial News Summary 📰")
+        news_url = st.text_input("Enter Financial News URL")
+
+        if st.button("Get Article Summary"):
+            summary = summarize_financial_news(news_url)
+            st.subheader("Article Summary 📝")
+            st.write(summary)
+
+    elif option == "Sentiment Intensity Analyzer":
+        st.header("Sentiment Intensity Analyzer 📊")
+        news_url = st.text_input("Enter Financial News URL")
+
+        if st.button("Analyze Sentiment"):
+            sentiment = analyze_sentiment(news_url)
+            if isinstance(sentiment, dict):
+                st.subheader("Sentiment Analysis Results 🧮")
+                st.write("Positive: ", sentiment['pos'])
+                st.write("Neutral: ", sentiment['neu'])
+                st.write("Negative: ", sentiment['neg'])
+                st.write("Compound: ", sentiment['compound'])
+            else:
+                st.write(sentiment)
+
+# Streamlit main entry point
+def main():
+    if 'show_main_app' not in st.session_state:
+        st.session_state.show_main_app = False
+
+    if 'first_name' not in st.session_state:
+        show_welcome_page()
+    else:
+        if st.session_state.show_main_app:
+            show_main_app()
+
+    # Footer
+    st.markdown(
+        """
+        <style>
+        footer {
+            visibility: hidden;
+        }
+        </style>
+        <footer>
+        <div style='text-align: center; padding: 10px; color: gray;'>
+            Developed by {Ashish Lathkar} 🧑‍💻
+        </div>
+        </footer>
+        """,
+        unsafe_allow_html=True
+    )
+
+if __name__ == "__main__":
+    main()
