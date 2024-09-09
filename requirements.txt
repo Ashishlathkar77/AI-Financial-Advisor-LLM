@@ -6,3 +6,6 @@ faiss-cpu
 numpy
 scikit-learn
 vaderSentiment
+pandas
+datetime
+pytz
