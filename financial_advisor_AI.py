@@ -14,7 +14,6 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 analyzer = SentimentIntensityAnalyzer()
 
-# Function to generate a financial plan
 def generate_financial_plan(risk_tolerance, financial_goal, investment_preferences, goal_amount, current_savings):
     prompt = f"""
     Given the following information:
@@ -37,7 +36,6 @@ def generate_financial_plan(risk_tolerance, financial_goal, investment_preferenc
     
     return response.choices[0].message.content.strip()
 
-# Function to generate tax optimization strategies
 def generate_tax_optimization_strategy(current_savings, investment_preferences):
     prompt = f"""
     Given the following investment preferences: {investment_preferences} and current savings: {current_savings}, provide a tax optimization strategy. Include suggestions like tax-loss harvesting, retirement account optimization, or other tax-saving tips.
@@ -53,7 +51,6 @@ def generate_tax_optimization_strategy(current_savings, investment_preferences):
     
     return response.choices[0].message.content.strip()
 
-# Function to summarize financial news
 def summarize_financial_news(news_url):
     try:
         response = requests.get(news_url)
@@ -76,7 +73,6 @@ def summarize_financial_news(news_url):
     except Exception as e:
         return f"Error in summarizing the news: {str(e)}"
 
-# Function to analyze sentiment intensity
 def analyze_sentiment(news_url):
     try:
         response = requests.get(news_url)
@@ -88,13 +84,11 @@ def analyze_sentiment(news_url):
     except Exception as e:
         return f"Error in analyzing sentiment: {str(e)}"
 
-# Function to determine greeting based on time
 from datetime import datetime
 import pytz
 
 def get_greeting():
-    # Set your timezone here (e.g., 'America/New_York' for EST/EDT)
-    timezone = pytz.timezone('America/New_York')  # Adjust as necessary
+    timezone = pytz.timezone('America/New_York')  
     now = datetime.now(timezone).hour
 
     if now < 12:
@@ -104,7 +98,6 @@ def get_greeting():
     else:
         return "Good evening 🌙"
 
-# Welcome Page
 def show_welcome_page():
     st.title("Welcome to the AI-Powered Financial Advisor 🏦")
     
@@ -117,16 +110,13 @@ def show_welcome_page():
             st.session_state.first_name = first_name
             st.session_state.show_main_app = True
     
-# Main Application
 def show_main_app():
-    # Streamlit Sidebar Navigation
     st.sidebar.title("AI-Powered Financial Advisor 🏦")
     option = st.sidebar.selectbox(
         "Choose a feature", 
         ["Personalized Financial Plan", "Tax Optimization Strategy", "Financial News Summary", "Sentiment Intensity Analyzer"]
     )
 
-    # Main Content Area
     if option == "Personalized Financial Plan":
         st.header("Personalized Financial Plan 💼")
 
@@ -192,7 +182,6 @@ def show_main_app():
             else:
                 st.write(sentiment)
 
-# Streamlit main entry point
 def main():
     if 'show_main_app' not in st.session_state:
         st.session_state.show_main_app = False
@@ -203,7 +192,6 @@ def main():
         if st.session_state.show_main_app:
             show_main_app()
 
-    # Footer
     st.markdown(
         """
         <style>
