@@ -9,3 +9,4 @@ vaderSentiment
 pandas
 datetime
 pytz
+python-dotenv

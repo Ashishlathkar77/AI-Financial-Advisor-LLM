@@ -5,9 +5,12 @@ import openai
 from datetime import datetime
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import pytz
+from dotenv import load_dotenv
+import os
 
-# OpenAI API key
-OPENAI_API_KEY = 'your-OpenAI-API-keys'
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 analyzer = SentimentIntensityAnalyzer()
 
